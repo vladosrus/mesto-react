@@ -1,23 +1,57 @@
+import React from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
+import PopupWithForm from "./PopupWithForm";
+import ImagePopup from "./ImagePopup";
 
-function App() {
-  return (
-    <div className="page">
-      <Header />
-      <Main />
-      <Footer />
-      {/* Попап редактирования профиля */}
-      <div className="popup popup_named_profile">
-        <div className="popup__container">
-          <h2 className="popup__title">Редактировать профиль</h2>
-          <button className="popup__close-icon" type="button"></button>
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = ({
+      isEditAvatarPopupOpen: false,
+      isEditProfilePopupOpen: false,
+      isAddPlacePopupOpen: false
+    })
+  }
+
+  handleEditAvatarClick = () => {
+    this.setState({isEditAvatarPopupOpen: true});
+  }
+  handleEditProfileClick = () => {
+    this.setState({isEditProfilePopupOpen: true});
+  }
+  handleAddPlaceClick = () => {
+    this.setState({isAddPlacePopupOpen: true});
+  }
+
+  closeAllPopups = () => {
+    this.setState({
+      isEditAvatarPopupOpen: false,
+      isEditProfilePopupOpen: false,
+      isAddPlacePopupOpen: false
+    })
+  }
+
+  render() {
+    return (
+      <div className="page">
+        <Header />
+        <Main
+          onEditProfile={this.handleEditProfileClick}
+          onEditAvatar={this.handleEditAvatarClick}
+          onAddPlace={this.handleAddPlaceClick}
+        />
+        <Footer />
+
+        {/* Попап редактирования профиля */}
+        <PopupWithForm name="profile" title="Редактировать профиль" isOpen={this.state.isEditProfilePopupOpen} onClose={this.closeAllPopups}>
           <form
             className="popup__form"
             name="profile"
             id="profileform"
-            novalidate
+            noValidate
           >
             <div className="popup__input-container">
               <input
@@ -26,8 +60,8 @@ function App() {
                 type="text"
                 placeholder="Ваше имя"
                 required
-                minlength="2"
-                maxlength="40"
+                minLength="2"
+                maxLength="40"
               />
               <span className="popup__input-error name-error"></span>
             </div>
@@ -38,8 +72,8 @@ function App() {
                 type="text"
                 placeholder="Расскажите о себе"
                 required
-                minlength="2"
-                maxlength="200"
+                minLength="2"
+                maxLength="200"
               />
               <span className="popup__input-error job-error"></span>
             </div>
@@ -47,14 +81,11 @@ function App() {
               Сохранить
             </button>
           </form>
-        </div>
-      </div>
-      {/* Попап обновления фото профиля */}
-      <div className="popup popup_named_profile-image">
-        <div className="popup__container">
-          <h2 className="popup__title">Обновить аватар</h2>
-          <button className="popup__close-icon" type="button"></button>
-          <form className="popup__form" name="image" id="imageform" novalidate>
+        </PopupWithForm>
+
+        {/* Попап обновления фото профиля */}
+        <PopupWithForm name="profile-image" title="Обновить аватар" isOpen={this.state.isEditAvatarPopupOpen} onClose={this.closeAllPopups}>
+          <form className="popup__form" name="image" id="imageform" noValidate>
             <div className="popup__input-container">
               <input
                 id="profileImgLink"
@@ -69,14 +100,11 @@ function App() {
               Сохранить
             </button>
           </form>
-        </div>
-      </div>
-      {/* Попап добавления карточек */}
-      <div className="popup popup_named_card">
-        <div className="popup__container">
-          <h2 className="popup__title">Новое Место</h2>
-          <button className="popup__close-icon" type="button"></button>
-          <form className="popup__form" name="card" id="cardform" novalidate>
+        </PopupWithForm>
+
+        {/* Попап добавления карточек */}
+        <PopupWithForm name="card" title="Новое Место" isOpen={this.state.isAddPlacePopupOpen} onClose={this.closeAllPopups}>
+          <form className="popup__form" name="card" id="cardform" noValidate>
             <div className="popup__input-container">
               <input
                 id="imgname"
@@ -84,8 +112,8 @@ function App() {
                 type="text"
                 placeholder="Название"
                 required
-                minlength="2"
-                maxlength="30"
+                minLength="2"
+                maxLength="30"
               />
               <span className="popup__input-error imgname-error"></span>
             </div>
@@ -103,35 +131,25 @@ function App() {
               Создать
             </button>
           </form>
-        </div>
-      </div>
-      {/* Попап удаления карточки */}
-      <div className="popup popup_named_delete">
-        <div className="popup__container">
-          <h2 className="popup__title">Вы уверены?</h2>
-          <button className="popup__close-icon" type="button"></button>
+        </PopupWithForm>
+
+        {/* Попап удаления карточки */}
+        <PopupWithForm name="delete" title="Вы уверены?">
           <form
             className="popup__form"
             name="deletecard"
             id="deletecardform"
-            novalidate
+            noValidate
           >
             <button className="popup__submit-button" type="submit">
               Да
             </button>
           </form>
-        </div>
-      </div>
-      {/* Попап с увеличенной фотографией */}
-      <div className="popup popup_named_zoom">
-        <div className="popup__image-container">
-          <img className="popup__image" src="#" alt="" />
-          <button className="popup__close-icon" type="button"></button>
-          <p className="popup__caption"></p>
-        </div>
-      </div>
-    </div>
-  );
-}
+        </PopupWithForm>
 
-export default App;
+        {/* Попап с увеличенной фотографией */}
+        <ImagePopup />
+      </div>
+    );
+  }
+}
