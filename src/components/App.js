@@ -4,34 +4,45 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
+import api from "../utils/Api";
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = ({
+    this.state = {
       isEditAvatarPopupOpen: false,
       isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false
-    })
+      isAddPlacePopupOpen: false,
+    };
   }
 
   handleEditAvatarClick = () => {
-    this.setState({isEditAvatarPopupOpen: true});
-  }
+    this.setState({ isEditAvatarPopupOpen: true });
+  };
   handleEditProfileClick = () => {
-    this.setState({isEditProfilePopupOpen: true});
-  }
+    this.setState({ isEditProfilePopupOpen: true });
+  };
   handleAddPlaceClick = () => {
-    this.setState({isAddPlacePopupOpen: true});
-  }
+    this.setState({ isAddPlacePopupOpen: true });
+  };
 
   closeAllPopups = () => {
     this.setState({
       isEditAvatarPopupOpen: false,
       isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false
-    })
+      isAddPlacePopupOpen: false,
+    });
+  };
+
+  componentDidMount() {
+    api.getProfileInfo().then((result) => {
+      this.setState({
+        userName: result.name,
+        userDescription: result.about,
+        userAvatar: result.avatar,
+      });
+    });
   }
 
   render() {
@@ -42,11 +53,19 @@ export default class App extends React.Component {
           onEditProfile={this.handleEditProfileClick}
           onEditAvatar={this.handleEditAvatarClick}
           onAddPlace={this.handleAddPlaceClick}
+          userName={this.state.userName}
+          userDescription={this.state.userDescription}
+          userAvatar={this.state.userAvatar}
         />
         <Footer />
 
         {/* Попап редактирования профиля */}
-        <PopupWithForm name="profile" title="Редактировать профиль" isOpen={this.state.isEditProfilePopupOpen} onClose={this.closeAllPopups}>
+        <PopupWithForm
+          name="profile"
+          title="Редактировать профиль"
+          isOpen={this.state.isEditProfilePopupOpen}
+          onClose={this.closeAllPopups}
+        >
           <form
             className="popup__form"
             name="profile"
@@ -84,7 +103,12 @@ export default class App extends React.Component {
         </PopupWithForm>
 
         {/* Попап обновления фото профиля */}
-        <PopupWithForm name="profile-image" title="Обновить аватар" isOpen={this.state.isEditAvatarPopupOpen} onClose={this.closeAllPopups}>
+        <PopupWithForm
+          name="profile-image"
+          title="Обновить аватар"
+          isOpen={this.state.isEditAvatarPopupOpen}
+          onClose={this.closeAllPopups}
+        >
           <form className="popup__form" name="image" id="imageform" noValidate>
             <div className="popup__input-container">
               <input
@@ -103,7 +127,12 @@ export default class App extends React.Component {
         </PopupWithForm>
 
         {/* Попап добавления карточек */}
-        <PopupWithForm name="card" title="Новое Место" isOpen={this.state.isAddPlacePopupOpen} onClose={this.closeAllPopups}>
+        <PopupWithForm
+          name="card"
+          title="Новое Место"
+          isOpen={this.state.isAddPlacePopupOpen}
+          onClose={this.closeAllPopups}
+        >
           <form className="popup__form" name="card" id="cardform" noValidate>
             <div className="popup__input-container">
               <input

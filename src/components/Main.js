@@ -11,7 +11,7 @@ export default class Main extends React.Component {
       <main>
         <section className="profile">
           <div className="profile__avatar-container">
-            <img src="#" alt="Фото профиля" className="profile__avatar" />
+            <img src={this.props.userAvatar} alt="Фото профиля" className="profile__avatar" />
             <div className="profile__avatar-overlay" onClick={this.props.onEditAvatar}>
               <img
                 src={editProfileImgButton}
@@ -21,8 +21,8 @@ export default class Main extends React.Component {
             </div>
           </div>
           <div className="profile__info">
-            <h1 className="profile__title"></h1>
-            <p className="profile__subtitle"></p>
+            <h1 className="profile__title">{this.props.userName}</h1>
+            <p className="profile__subtitle">{this.props.userDescription}</p>
             <button className="profile__edit-button" type="button" onClick={this.props.onEditProfile}></button>
           </div>
           <button className="profile__add-button" type="button" onClick={this.props.onAddPlace}></button>
