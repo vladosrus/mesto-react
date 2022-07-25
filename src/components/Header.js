@@ -1,6 +1,6 @@
 import header__logo from "../images/header__logo.svg";
 
-function Header() {
+export default function Header() {
   return (
     <header className="header">
       <a href="#">
@@ -13,5 +13,3 @@ function Header() {
     </header>
   );
 }
-
-export default Header;
