@@ -33,22 +33,24 @@ export default function App() {
         propses.onClose();
       }
     }
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscClose);
-      const thisPopup = document.querySelector(`.popup_named_${propses.name}`);
-      thisPopup.addEventListener("click", (evt) => {
-        if (
-          evt.target.classList.contains("popup") ||
-          evt.target.classList.contains("popup_opened")
-        ) {
-          propses.onClose();
-        }
-      });
-    }
 
-    return () => {
-      document.removeEventListener("keydown", handleEscClose);
-    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscClose, { once: true });
+      const thisPopup = document.querySelector(`.popup_named_${propses.name}`);
+      thisPopup.addEventListener(
+        "click",
+        (evt) => {
+          if (
+            evt.target.classList.contains("popup") ||
+            evt.target.classList.contains("popup_opened")
+          ) {
+            propses.onClose();
+            document.removeEventListener("keydown", handleEscClose, { once: true });
+          }
+        },
+        { once: true }
+      );
+    }
   }
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
