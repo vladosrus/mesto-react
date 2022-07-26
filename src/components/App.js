@@ -6,17 +6,12 @@ import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 
 export default function App() {
-  const [state, setState] = React.useState({
-    isEditAvatarPopupOpen: false,
-    isEditProfilePopupOpen: false,
-    isAddPlacePopupOpen: false,
-  });
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState("");
+  const [selectedCard, setSelectedCard] = React.useState({});
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
 
   function handleEditAvatarClick() {
@@ -32,11 +27,35 @@ export default function App() {
     setSelectedCard(card);
     setIsImagePopupOpen(true);
   }
+  function handleEscClick(propses, isOpen) {
+    function handleEscClose(evt) {
+      if (evt.key === "Escape") {
+        propses.onClose();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscClose);
+      const thisPopup = document.querySelector(`.popup_named_${propses.name}`);
+      thisPopup.addEventListener("click", (evt) => {
+        if (
+          evt.target.classList.contains("popup") ||
+          evt.target.classList.contains("popup_opened")
+        ) {
+          propses.onClose();
+        }
+      });
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscClose);
+    };
+  }
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
+    setSelectedCard(null);
   }
   return (
     <div className="page">
@@ -55,6 +74,7 @@ export default function App() {
         title="Редактировать профиль"
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
+        onEscClick={handleEscClick}
       >
         <form
           className="popup__form"
@@ -98,6 +118,7 @@ export default function App() {
         title="Обновить аватар"
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
+        onEscClick={handleEscClick}
       >
         <form className="popup__form" name="image" id="imageform" noValidate>
           <div className="popup__input-container">
@@ -122,6 +143,7 @@ export default function App() {
         title="Новое Место"
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
+        onEscClick={handleEscClick}
       >
         <form className="popup__form" name="card" id="cardform" noValidate>
           <div className="popup__input-container">
@@ -172,6 +194,7 @@ export default function App() {
         card={selectedCard}
         isOpen={isImagePopupOpen}
         onClose={closeAllPopups}
+        onEscClick={handleEscClick}
       />
     </div>
   );

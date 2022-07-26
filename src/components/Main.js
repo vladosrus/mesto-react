@@ -7,8 +7,8 @@ export default function Main(props) {
   const [userName, setUserName] = React.useState("");
   const [userDescription, setUserDescription] = React.useState("");
   const [userAvatar, setUserAvatar] = React.useState("");
-  const [cards, setCards] = React.useState("");
-  const mmm = "";
+  const [cards, setCards] = React.useState([]);
+
   React.useEffect(() => {
     Promise.all([api.getProfileInfo(), api.getInitialCards()])
       .then(([info, initCards]) => {
@@ -21,6 +21,7 @@ export default function Main(props) {
         console.log(error);
       });
   }, []);
+
   return (
     <main>
       <section className="profile">
@@ -45,13 +46,13 @@ export default function Main(props) {
             className="profile__edit-button"
             type="button"
             onClick={props.onEditProfile}
-          ></button>
+          />
         </div>
         <button
           className="profile__add-button"
           type="button"
           onClick={props.onAddPlace}
-        ></button>
+        />
       </section>
 
       <section className="elements">
