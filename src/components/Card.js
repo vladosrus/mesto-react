@@ -1,7 +1,11 @@
 export default function Card(props) {
+  function handleClick() {
+    props.onCardClick(props.card)
+  }
+  
   return (
-    <article className="element card" key={props.id}>
-      <img className="element__image" src={props.link} alt="" />
+    <article className="element card">
+      <img className="element__image" src={props.link} alt="" onClick={handleClick}/>
       <button className="element__basket-button" type="button"></button>
       <div className="element__caption">
         <h2 className="element__title">{props.name}</h2>

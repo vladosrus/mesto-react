@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import api from "../utils/Api";
 
 export default function App() {
   const [state, setState] = React.useState({
@@ -12,37 +11,32 @@ export default function App() {
     isEditProfilePopupOpen: false,
     isAddPlacePopupOpen: false,
   });
-
-  React.useEffect(() => {
-    Promise.all([api.getProfileInfo(), api.getInitialCards()])
-      .then(([info, initCards]) => {
-        setState({
-          userName: info.name,
-          userDescription: info.about,
-          userAvatar: info.avatar,
-          cards: initCards
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
+    React.useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
+    React.useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState("");
+  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
 
   function handleEditAvatarClick() {
-    setState({ isEditAvatarPopupOpen: true });
+    setIsEditAvatarPopupOpen(true);
   }
   function handleEditProfileClick() {
-    setState({ isEditProfilePopupOpen: true });
+    setIsEditProfilePopupOpen(true);
   }
   function handleAddPlaceClick() {
-    setState({ isAddPlacePopupOpen: true });
+    setIsAddPlacePopupOpen(true);
+  }
+  function handleCardClick(card) {
+    setSelectedCard(card);
+    setIsImagePopupOpen(true);
   }
   function closeAllPopups() {
-    setState({
-      isEditAvatarPopupOpen: false,
-      isEditProfilePopupOpen: false,
-      isAddPlacePopupOpen: false,
-    });
+    setIsEditAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+    setIsImagePopupOpen(false);
   }
   return (
     <div className="page">
@@ -51,10 +45,7 @@ export default function App() {
         onEditProfile={handleEditProfileClick}
         onEditAvatar={handleEditAvatarClick}
         onAddPlace={handleAddPlaceClick}
-        userName={state.userName}
-        userDescription={state.userDescription}
-        userAvatar={state.userAvatar}
-        cards={state.cards}
+        onCardClick={handleCardClick}
       />
       <Footer />
 
@@ -62,7 +53,7 @@ export default function App() {
       <PopupWithForm
         name="profile"
         title="Редактировать профиль"
-        isOpen={state.isEditProfilePopupOpen}
+        isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
       >
         <form
@@ -105,7 +96,7 @@ export default function App() {
       <PopupWithForm
         name="profile-image"
         title="Обновить аватар"
-        isOpen={state.isEditAvatarPopupOpen}
+        isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
       >
         <form className="popup__form" name="image" id="imageform" noValidate>
@@ -129,7 +120,7 @@ export default function App() {
       <PopupWithForm
         name="card"
         title="Новое Место"
-        isOpen={state.isAddPlacePopupOpen}
+        isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
       >
         <form className="popup__form" name="card" id="cardform" noValidate>
@@ -176,7 +167,12 @@ export default function App() {
       </PopupWithForm>
 
       {/* Попап с увеличенной фотографией */}
-      <ImagePopup />
+      <ImagePopup
+        name="zoom"
+        card={selectedCard}
+        isOpen={isImagePopupOpen}
+        onClose={closeAllPopups}
+      />
     </div>
   );
 }
