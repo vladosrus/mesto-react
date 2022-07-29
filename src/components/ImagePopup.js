@@ -1,10 +1,6 @@
 import React from "react";
 
 export default function ImagePopup(props) {
-  React.useEffect(() => {
-    props.onEscClick(props, props.isOpen);
-  }, [props.isOpen]);
-
   if (props.isOpen) {
     return (
       <div className="popup popup_named_zoom popup_opened">

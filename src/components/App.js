@@ -27,31 +27,7 @@ export default function App() {
     setSelectedCard(card);
     setIsImagePopupOpen(true);
   }
-  function handleEscClick(propses, isOpen) {
-    function handleEscClose(evt) {
-      if (evt.key === "Escape") {
-        propses.onClose();
-      }
-    }
 
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscClose, { once: true });
-      const thisPopup = document.querySelector(`.popup_named_${propses.name}`);
-      thisPopup.addEventListener(
-        "click",
-        (evt) => {
-          if (
-            evt.target.classList.contains("popup") ||
-            evt.target.classList.contains("popup_opened")
-          ) {
-            propses.onClose();
-            document.removeEventListener("keydown", handleEscClose, { once: true });
-          }
-        },
-        { once: true }
-      );
-    }
-  }
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
@@ -76,7 +52,6 @@ export default function App() {
         title="Редактировать профиль"
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
-        onEscClick={handleEscClick}
       >
         <form
           className="popup__form"
@@ -120,7 +95,6 @@ export default function App() {
         title="Обновить аватар"
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onEscClick={handleEscClick}
       >
         <form className="popup__form" name="image" id="imageform" noValidate>
           <div className="popup__input-container">
@@ -145,7 +119,6 @@ export default function App() {
         title="Новое Место"
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onEscClick={handleEscClick}
       >
         <form className="popup__form" name="card" id="cardform" noValidate>
           <div className="popup__input-container">
@@ -196,7 +169,6 @@ export default function App() {
         card={selectedCard}
         isOpen={isImagePopupOpen}
         onClose={closeAllPopups}
-        onEscClick={handleEscClick}
       />
     </div>
   );

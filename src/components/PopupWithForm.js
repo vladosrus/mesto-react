@@ -1,10 +1,6 @@
 import React from "react";
 
 export default function PopupWithForm(props) {
-  React.useEffect(() => {
-    props.onEscClick && props.onEscClick(props, props.isOpen);
-  }, [props.isOpen]);
-
   if (props.isOpen) {
     return (
       <div className={`popup popup_named_${props.name} popup_opened`}>
