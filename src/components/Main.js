@@ -2,19 +2,15 @@ import Card from "./Card";
 import editProfileImgButton from "../images/editProfileImg-button.svg";
 import React from "react";
 import api from "../utils/Api";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Main(props) {
-  const [userName, setUserName] = React.useState("");
-  const [userDescription, setUserDescription] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
+  const current = React.useContext(CurrentUserContext);
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    Promise.all([api.getProfileInfo(), api.getInitialCards()])
-      .then(([info, initCards]) => {
-        setUserName(info.name);
-        setUserDescription(info.about);
-        setUserAvatar(info.avatar);
+    api.getInitialCards()
+      .then((initCards) => {
         setCards(initCards);
       })
       .catch((error) => {
@@ -27,7 +23,7 @@ export default function Main(props) {
       <section className="profile">
         <div className="profile__avatar-container">
           <img
-            src={userAvatar}
+            src={current.avatar}
             alt="Фото профиля"
             className="profile__avatar"
           />
@@ -40,8 +36,8 @@ export default function Main(props) {
           </div>
         </div>
         <div className="profile__info">
-          <h1 className="profile__title">{userName}</h1>
-          <p className="profile__subtitle">{userDescription}</p>
+          <h1 className="profile__title">{current.name}</h1>
+          <p className="profile__subtitle">{current.about}</p>
           <button
             className="profile__edit-button"
             type="button"
