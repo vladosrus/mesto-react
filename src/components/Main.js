@@ -9,7 +9,8 @@ export default function Main(props) {
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    api.getInitialCards()
+    api
+      .getInitialCards()
       .then((initCards) => {
         setCards(initCards);
       })
@@ -17,6 +18,23 @@ export default function Main(props) {
         console.log(error);
       });
   }, []);
+
+  function handleCardLike(card) {
+    //Проверка, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === current._id);
+
+    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleCardDelete(card) {
+    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
+    api.deleteCard(card._id).then(() => {
+      setCards((state) => state.filter((c) => (c._id !== card._id)));
+    });
+  }
 
   return (
     <main>
@@ -63,6 +81,8 @@ export default function Main(props) {
                   link={newCard.link}
                   likes={newCard.likes.length}
                   onCardClick={props.onCardClick}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handleCardDelete}
                 />
               );
             })}

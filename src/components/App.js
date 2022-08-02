@@ -14,7 +14,6 @@ export default function App() {
       .getProfileInfo()
       .then((currentInfo) => {
         setCurrentUser(currentInfo);
-        console.log(currentInfo)
       })
       .catch((error) => {
         console.log(error);

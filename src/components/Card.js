@@ -18,11 +18,19 @@ export default function Card(props) {
   // Создаём переменную, которую после зададим в `className` для кнопки лайка
   const cardLikeButtonClassName = `element__like-button ${
     isLiked && "element__like-button_active"
-  }`;;
+  }`;
 
   function handleClick() {
     props.onCardClick(props.card);
-  }
+  };
+
+  function handleLikeClick() {
+    props.onCardLike(props.card);
+  };
+
+  function handleDeleteClick() {
+    props.onCardDelete(props.card);
+  };
 
   return (
     <article className="element card">
@@ -32,11 +40,11 @@ export default function Card(props) {
         alt={props.name}
         onClick={handleClick}
       />
-      <button className={cardDeleteButtonClassName} type="button" />
+      <button className={cardDeleteButtonClassName} type="button" onClick={handleDeleteClick} />
       <div className="element__caption">
         <h2 className="element__title">{props.name}</h2>
         <div className="element__like-container">
-          <button className={cardLikeButtonClassName} type="button" id="like" />
+          <button className={cardLikeButtonClassName} type="button" id="like" onClick={handleLikeClick}/>
           <p className="element__like-count">{props.likes}</p>
         </div>
       </div>
