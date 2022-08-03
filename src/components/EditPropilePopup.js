@@ -39,7 +39,6 @@ export default function EditProfilePopup(props) {
         name="profile"
         id="profileform"
         onSubmit={handleSubmit}
-        noValidate
       >
         <div className="popup__input-container">
           <input

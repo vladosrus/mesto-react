@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function EditAvatarPopup(props) {
   const inputRef = useRef();
-  const [profileImgLink, setProfileImgLink] = useState('');
-
+  
   function handleSubmit(evt) {
     evt.preventDefault();
     props.onUpdateAvatar({
@@ -12,12 +11,8 @@ export default function EditAvatarPopup(props) {
     });
   }
 
-  function handleChange(evt) {
-    setProfileImgLink(evt.target.value);
-  }
-
   useEffect(() => {
-    setProfileImgLink('');
+    inputRef.current.value = '';
   }, [props.isOpen]);
 
   return (
@@ -40,8 +35,6 @@ export default function EditAvatarPopup(props) {
             type="url"
             placeholder="Ссылка на картинку"
             ref={inputRef}
-            value={profileImgLink}
-            onChange={handleChange}
             required
           />
           <span className="popup__input-error profileImgLink-error"></span>
