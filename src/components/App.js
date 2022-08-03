@@ -4,6 +4,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditPropilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -64,6 +65,17 @@ export default function App() {
         console.log(error);
       });
   }
+  function handleUpdateAvatar(data) {
+    api
+      .changeProfileImg(data)
+      .then((result) => {
+        setCurrentUser(result);
+        closeAllPopups();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -83,29 +95,11 @@ export default function App() {
           onUpdateUser={handleUpdateUser}
         />
 
-        {/* Попап обновления фото профиля */}
-        <PopupWithForm
-          name="profile-image"
-          title="Обновить аватар"
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-        >
-          <form className="popup__form" name="image" id="imageform" noValidate>
-            <div className="popup__input-container">
-              <input
-                id="profileImgLink"
-                className="popup__input popup__input_named_link"
-                type="url"
-                placeholder="Ссылка на картинку"
-                required
-              />
-              <span className="popup__input-error profileImgLink-error"></span>
-            </div>
-            <button className="popup__submit-button" type="submit">
-              Сохранить
-            </button>
-          </form>
-        </PopupWithForm>
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
         {/* Попап добавления карточек */}
         <PopupWithForm
