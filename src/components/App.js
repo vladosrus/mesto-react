@@ -5,22 +5,42 @@ import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditPropilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function App() {
   const [currentUser, setCurrentUser] = React.useState({});
+  const [cards, setCards] = React.useState([]);
+
   React.useEffect(() => {
-    api
-      .getProfileInfo()
-      .then((currentUserInfo) => {
+    Promise.all([api.getProfileInfo(), api.getInitialCards()])
+      .then(([currentUserInfo, initCards]) => {
         setCurrentUser(currentUserInfo);
+        setCards(initCards);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
+  function handleCardLike(card) {
+    //Проверка, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleCardDelete(card) {
+    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
+    api.deleteCard(card._id).then(() => {
+      setCards((state) => state.filter((c) => c._id !== card._id));
+    });
+  }
 
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
@@ -77,6 +97,18 @@ export default function App() {
       });
   }
 
+  function handleAddPlace(data) {
+    api
+      .addNewCard(data)
+      .then((newCard) => {
+        setCards([newCard, ...cards])
+        closeAllPopups()
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -86,6 +118,9 @@ export default function App() {
           onEditAvatar={handleEditAvatarClick}
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
         <Footer />
 
@@ -101,41 +136,11 @@ export default function App() {
           onUpdateAvatar={handleUpdateAvatar}
         />
 
-        {/* Попап добавления карточек */}
-        <PopupWithForm
-          name="card"
-          title="Новое Место"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-        >
-          <form className="popup__form" name="card" id="cardform" noValidate>
-            <div className="popup__input-container">
-              <input
-                id="imgname"
-                className="popup__input popup__input_named_imgname"
-                type="text"
-                placeholder="Название"
-                required
-                minLength="2"
-                maxLength="30"
-              />
-              <span className="popup__input-error imgname-error"></span>
-            </div>
-            <div className="popup__input-container">
-              <input
-                id="cardImgLink"
-                className="popup__input popup__input_named_link"
-                type="url"
-                placeholder="Ссылка на картинку"
-                required
-              />
-              <span className="popup__input-error cardImgLink-error"></span>
-            </div>
-            <button className="popup__submit-button" type="submit">
-              Создать
-            </button>
-          </form>
-        </PopupWithForm>
+          onAddPlace={handleAddPlace}
+        />
 
         {/* Попап удаления карточки */}
         <PopupWithForm name="delete" title="Вы уверены?">

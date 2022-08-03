@@ -6,35 +6,6 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      .then((initCards) => {
-        setCards(initCards);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  function handleCardLike(card) {
-    //Проверка, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
-    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
-    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
-  }
-
-  function handleCardDelete(card) {
-    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
-    api.deleteCard(card._id).then(() => {
-      setCards((state) => state.filter((c) => c._id !== card._id));
-    });
-  }
 
   return (
     <main>
@@ -71,8 +42,8 @@ export default function Main(props) {
 
       <section className="elements">
         <ul className="elements__list">
-          {cards &&
-            cards.map((newCard) => {
+          {props.cards &&
+            props.cards.map((newCard) => {
               return (
                 <Card
                   card={newCard}
@@ -81,8 +52,8 @@ export default function Main(props) {
                   link={newCard.link}
                   likes={newCard.likes.length}
                   onCardClick={props.onCardClick}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleCardDelete}
+                  onCardLike={props.onCardLike}
+                  onCardDelete={props.onCardDelete}
                 />
               );
             })}
