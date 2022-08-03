@@ -1,10 +1,10 @@
 import Card from "./Card";
 import editProfileImgButton from "../images/editProfileImg-button.svg";
-import React from "react";
+import { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Main(props) {
-  const currentUser = React.useContext(CurrentUserContext);
+  const currentUser = useContext(CurrentUserContext);
   
   return (
     <main>
@@ -44,8 +44,7 @@ export default function Main(props) {
 
       <section className="elements">
         <ul className="elements__list">
-          {props.cards &&
-            props.cards.map((newCard) => {
+          {props.cards?.map((newCard) => {
               return (
                 <Card
                   card={newCard}

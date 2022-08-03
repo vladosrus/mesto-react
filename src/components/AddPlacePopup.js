@@ -1,25 +1,31 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function AddPlacePopup(props) {
-    const [cardImgName, setCardImgName] = React.useState("");
-    const [cardImgLink, setCardImgLink] = React.useState("");
+  const [cardImgName, setCardImgName] = useState("");
+  const [cardImgLink, setCardImgLink] = useState("");
 
-    function handleChange(evt) {
-        if (evt.target.id === "imgname") {
-          setCardImgName(evt.target.value);
-        } else {
-          setCardImgLink(evt.target.value);
-        }
-      }
-  
-    function handleSubmit(evt) {
+  function handleChange(evt) {
+    if (evt.target.id === "imgname") {
+      setCardImgName(evt.target.value);
+    } else {
+      setCardImgLink(evt.target.value);
+    }
+  }
+
+  function handleSubmit(evt) {
     evt.preventDefault();
     props.onAddPlace({
       name: cardImgName,
-      link: cardImgLink
+      link: cardImgLink,
     });
   }
+
+  useEffect(() => {
+    setCardImgName("");
+    setCardImgLink("");
+  }, [props.isOpen]);
+
   return (
     <PopupWithForm
       name="card"
@@ -27,7 +33,12 @@ export default function AddPlacePopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
     >
-      <form className="popup__form" name="card" id="cardform" onSubmit={handleSubmit} noValidate>
+      <form
+        className="popup__form"
+        name="card"
+        id="cardform"
+        onSubmit={handleSubmit}
+      >
         <div className="popup__input-container">
           <input
             id="imgname"

@@ -1,4 +1,3 @@
-import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function DeleteCardPopup(props) {
@@ -19,7 +18,6 @@ export default function DeleteCardPopup(props) {
         name="deletecard"
         id="deletecardform"
         onSubmit={handleSubmit}
-        noValidate
       >
         <button className="popup__submit-button" type="submit">
           Да

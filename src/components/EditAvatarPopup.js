@@ -1,8 +1,9 @@
-import React from "react";
+import { useState, useRef, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function EditAvatarPopup(props) {
-  const inputRef = React.useRef();
+  const inputRef = useRef();
+  const [profileImgLink, setProfileImgLink] = useState('');
 
   function handleSubmit(evt) {
     evt.preventDefault();
@@ -10,6 +11,15 @@ export default function EditAvatarPopup(props) {
       avatar: inputRef.current.value,
     });
   }
+
+  function handleChange(evt) {
+    setProfileImgLink(evt.target.value);
+  }
+
+  useEffect(() => {
+    setProfileImgLink('');
+  }, [props.isOpen]);
+
   return (
     <PopupWithForm
       name="profile-image"
@@ -22,7 +32,6 @@ export default function EditAvatarPopup(props) {
         name="image"
         id="imageform"
         onSubmit={handleSubmit}
-        noValidate
       >
         <div className="popup__input-container">
           <input
@@ -31,6 +40,8 @@ export default function EditAvatarPopup(props) {
             type="url"
             placeholder="Ссылка на картинку"
             ref={inputRef}
+            value={profileImgLink}
+            onChange={handleChange}
             required
           />
           <span className="popup__input-error profileImgLink-error"></span>
