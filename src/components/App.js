@@ -3,6 +3,7 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
+import EditProfilePopup from "./EditPropilePopup";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -12,8 +13,8 @@ export default function App() {
   React.useEffect(() => {
     api
       .getProfileInfo()
-      .then((currentInfo) => {
-        setCurrentUser(currentInfo);
+      .then((currentUserInfo) => {
+        setCurrentUser(currentUserInfo);
       })
       .catch((error) => {
         console.log(error);
@@ -51,6 +52,19 @@ export default function App() {
     setIsImagePopupOpen(false);
     setSelectedCard(null);
   }
+
+  function handleUpdateUser(data) {
+    api
+      .changeProfileInfo(data)
+      .then((result) => {
+        setCurrentUser(result);
+        closeAllPopups();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -63,48 +77,11 @@ export default function App() {
         />
         <Footer />
 
-        {/* Попап редактирования профиля */}
-        <PopupWithForm
-          name="profile"
-          title="Редактировать профиль"
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-        >
-          <form
-            className="popup__form"
-            name="profile"
-            id="profileform"
-            noValidate
-          >
-            <div className="popup__input-container">
-              <input
-                id="name"
-                className="popup__input popup__input_named_name"
-                type="text"
-                placeholder="Ваше имя"
-                required
-                minLength="2"
-                maxLength="40"
-              />
-              <span className="popup__input-error name-error"></span>
-            </div>
-            <div className="popup__input-container">
-              <input
-                id="job"
-                className="popup__input popup__input_named_job"
-                type="text"
-                placeholder="Расскажите о себе"
-                required
-                minLength="2"
-                maxLength="200"
-              />
-              <span className="popup__input-error job-error"></span>
-            </div>
-            <button className="popup__submit-button" type="submit">
-              Сохранить
-            </button>
-          </form>
-        </PopupWithForm>
+          onUpdateUser={handleUpdateUser}
+        />
 
         {/* Попап обновления фото профиля */}
         <PopupWithForm

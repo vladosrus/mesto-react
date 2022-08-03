@@ -5,7 +5,7 @@ import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Main(props) {
-  const current = React.useContext(CurrentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
@@ -21,7 +21,7 @@ export default function Main(props) {
 
   function handleCardLike(card) {
     //Проверка, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === current._id);
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
     api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
@@ -32,7 +32,7 @@ export default function Main(props) {
   function handleCardDelete(card) {
     //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
     api.deleteCard(card._id).then(() => {
-      setCards((state) => state.filter((c) => (c._id !== card._id)));
+      setCards((state) => state.filter((c) => c._id !== card._id));
     });
   }
 
@@ -41,7 +41,7 @@ export default function Main(props) {
       <section className="profile">
         <div className="profile__avatar-container">
           <img
-            src={current.avatar}
+            src={currentUser.avatar}
             alt="Фото профиля"
             className="profile__avatar"
           />
@@ -54,8 +54,8 @@ export default function Main(props) {
           </div>
         </div>
         <div className="profile__info">
-          <h1 className="profile__title">{current.name}</h1>
-          <p className="profile__subtitle">{current.about}</p>
+          <h1 className="profile__title">{currentUser.name}</h1>
+          <p className="profile__subtitle">{currentUser.about}</p>
           <button
             className="profile__edit-button"
             type="button"

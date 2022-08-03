@@ -2,10 +2,10 @@ import React from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Card(props) {
-  const current = React.useContext(CurrentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
 
   //Определяем, являюсь ли я владельцем текущей карточки
-  const isOwn = props.card.owner._id === current._id;
+  const isOwn = props.card.owner._id === currentUser._id;
 
   //Переменную, задающая className для кнопки удалении
   const cardDeleteButtonClassName = `element__basket-button ${
@@ -13,7 +13,7 @@ export default function Card(props) {
   }`;
 
   // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
-  const isLiked = props.card.likes.some((i) => i._id === current._id);
+  const isLiked = props.card.likes.some((i) => i._id === currentUser._id);
 
   // Создаём переменную, которую после зададим в `className` для кнопки лайка
   const cardLikeButtonClassName = `element__like-button ${
@@ -22,15 +22,15 @@ export default function Card(props) {
 
   function handleClick() {
     props.onCardClick(props.card);
-  };
+  }
 
   function handleLikeClick() {
     props.onCardLike(props.card);
-  };
+  }
 
   function handleDeleteClick() {
     props.onCardDelete(props.card);
-  };
+  }
 
   return (
     <article className="element card">
@@ -40,11 +40,20 @@ export default function Card(props) {
         alt={props.name}
         onClick={handleClick}
       />
-      <button className={cardDeleteButtonClassName} type="button" onClick={handleDeleteClick} />
+      <button
+        className={cardDeleteButtonClassName}
+        type="button"
+        onClick={handleDeleteClick}
+      />
       <div className="element__caption">
         <h2 className="element__title">{props.name}</h2>
         <div className="element__like-container">
-          <button className={cardLikeButtonClassName} type="button" id="like" onClick={handleLikeClick}/>
+          <button
+            className={cardLikeButtonClassName}
+            type="button"
+            id="like"
+            onClick={handleLikeClick}
+          />
           <p className="element__like-count">{props.likes}</p>
         </div>
       </div>
