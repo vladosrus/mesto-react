@@ -28,8 +28,8 @@ export default function Card(props) {
     props.onCardLike(props.card);
   }
 
-  function handleDeleteClick() {
-    props.onCardDelete(props.card);
+  function handleDeleteCardClick() {
+    props.onDeleteCardClick(props.card);
   }
 
   return (
@@ -43,7 +43,7 @@ export default function Card(props) {
       <button
         className={cardDeleteButtonClassName}
         type="button"
-        onClick={handleDeleteClick}
+        onClick={handleDeleteCardClick}
       />
       <div className="element__caption">
         <h2 className="element__title">{props.name}</h2>

@@ -2,11 +2,11 @@ import React from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditPropilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
+import DeleteCardPopup from "./DeleteCardPopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
@@ -35,13 +35,6 @@ export default function App() {
     });
   }
 
-  function handleCardDelete(card) {
-    //Отправляем запрос в API, получаем обновлённые данные карточки, находим нужную карточку и обновляем
-    api.deleteCard(card._id).then(() => {
-      setCards((state) => state.filter((c) => c._id !== card._id));
-    });
-  }
-
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   function handleEditAvatarClick() {
@@ -59,6 +52,14 @@ export default function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  const [selectedDeleteCard, setSelectedDeleteCard] = React.useState({});
+  const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] =
+    React.useState(false);
+  function handleDeleteCardClick(card) {
+    setSelectedDeleteCard(card)
+    setIsDeleteCardPopupOpen(true);
+  }
+
   const [selectedCard, setSelectedCard] = React.useState({});
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
   function handleCardClick(card) {
@@ -71,6 +72,7 @@ export default function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
+    setIsDeleteCardPopupOpen(false);
     setSelectedCard(null);
   }
 
@@ -101,8 +103,20 @@ export default function App() {
     api
       .addNewCard(data)
       .then((newCard) => {
-        setCards([newCard, ...cards])
-        closeAllPopups()
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function handleDeleteCard(card) {
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+        closeAllPopups();
       })
       .catch((error) => {
         console.log(error);
@@ -120,7 +134,7 @@ export default function App() {
           onCardClick={handleCardClick}
           cards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onDeleteCardClick={handleDeleteCardClick}
         />
         <Footer />
 
@@ -142,19 +156,12 @@ export default function App() {
           onAddPlace={handleAddPlace}
         />
 
-        {/* Попап удаления карточки */}
-        <PopupWithForm name="delete" title="Вы уверены?">
-          <form
-            className="popup__form"
-            name="deletecard"
-            id="deletecardform"
-            noValidate
-          >
-            <button className="popup__submit-button" type="submit">
-              Да
-            </button>
-          </form>
-        </PopupWithForm>
+        <DeleteCardPopup
+          isOpen={isDeleteCardPopupOpen}
+          onClose={closeAllPopups}
+          onDeleteCard={handleDeleteCard}
+          card={selectedDeleteCard}
+        />
 
         {/* Попап с увеличенной фотографией */}
         <ImagePopup
